@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  # MongoDB for development
+  mongodb:
+    image: mongo:7.0-jammy
+    container_name: oauth-mongodb-dev
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: oauth_demo_dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+    networks:
+      - oauth-dev-network
+
+  # Express API Backend (Development)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: oauth-api-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      API_PORT: 3001
+      API_URL: http://localhost:3001
+      FRONTEND_URL: http://localhost:3000
+      SESSION_SECRET: dev-secret-key
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/oauth_demo_dev?authSource=admin
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+    networks:
+      - oauth-dev-network
+    command: npm run dev:server
+
+  # Next.js Frontend (Development)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      target: deps
+    container_name: oauth-frontend-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - api
+    networks:
+      - oauth-dev-network
+    command: npm run dev
+
+volumes:
+  mongodb_dev_data:
+
+networks:
+  oauth-dev-network:
+    driver: bridge

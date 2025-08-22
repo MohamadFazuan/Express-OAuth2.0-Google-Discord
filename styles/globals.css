@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900;
+    @apply min-h-screen text-white;
+  }
+}
+
+@layer components {
+  /* RetroUI Button Styles */
+  .retro-btn {
+    @apply relative inline-flex items-center justify-center px-6 py-3 text-sm font-semibold transition-all duration-200 ease-in-out;
+    @apply border-2 border-solid;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .retro-btn-primary {
+    @apply bg-gradient-to-r from-pink-500 to-violet-500;
+    @apply border-pink-400 text-white;
+    @apply hover:from-pink-600 hover:to-violet-600;
+    @apply hover:border-pink-500;
+    @apply focus:ring-pink-500;
+    @apply shadow-lg hover:shadow-xl;
+    @apply transform hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .retro-btn-secondary {
+    @apply bg-transparent border-gray-300 text-gray-700;
+    @apply hover:bg-gray-50 hover:border-gray-400;
+    @apply focus:ring-gray-500;
+  }
+
+  .retro-btn-google {
+    @apply bg-red-500 border-red-400 text-white;
+    @apply hover:bg-red-600 hover:border-red-500;
+    @apply focus:ring-red-500;
+    @apply shadow-lg hover:shadow-xl;
+    @apply transform hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .retro-btn-discord {
+    @apply bg-indigo-500 border-indigo-400 text-white;
+    @apply hover:bg-indigo-600 hover:border-indigo-500;
+    @apply focus:ring-indigo-500;
+    @apply shadow-lg hover:shadow-xl;
+    @apply transform hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .retro-btn-logout {
+    @apply bg-gray-500 border-gray-400 text-white;
+    @apply hover:bg-gray-600 hover:border-gray-500;
+    @apply focus:ring-gray-500;
+    @apply shadow-lg hover:shadow-xl;
+    @apply transform hover:-translate-y-0.5 active:translate-y-0;
+  }
+}
