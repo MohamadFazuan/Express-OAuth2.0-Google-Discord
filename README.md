@@ -1,6 +1,18 @@
 # 🔒 Express OAuth2.0 Authentication System
 
-A modern, production-ready OAuth2.0 authentication system built with **Express.js**, **Next.js**, and **Passport.js**. Features Google and Discord OAuth providers with a clean middleware architecture.
+![Retro OAuth Login Interface](./screenshots/retro-oauth-login.png)
+
+A modern, production-ready OAuth2.0 authentication system built with **Express.js**, **Next.js**, and **Passport.js**. Features Google and Discord OAuth providers with a clean middleware architecture and retro pixelated UI design.
+
+## ✨ Features
+
+- 🎮 **Retro Pixelated UI** - Nostalgic 8-bit design with Press Start 2P font
+- 🔐 **OAuth2.0 Authentication** - Google and Discord providers
+- 🚪 **Advanced Logout Options** - Multiple logout methods with confirmation pages
+- 🕷️ **Animated Success Page** - Interactive elements with bouncing spiders
+- 🛡️ **Security-First Architecture** - Session management and CSRF protection
+- 📱 **Responsive Design** - Works on all devices with retro aesthetics
+- ⚡ **Quick Actions** - Fast logout, profile view, and session management
 
 ## 🚀 Quick Start
 
@@ -257,3 +269,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ---
 
 **Built with ❤️ using Express.js, Next.js, Passport.js, and RetroUI**
+
+## 🎮 UI Preview
+
+![Retro OAuth Login Interface](./screenshots/retro-oauth-login.png)
+
+*Experience the nostalgic pixelated authentication interface with animated elements and retro styling*

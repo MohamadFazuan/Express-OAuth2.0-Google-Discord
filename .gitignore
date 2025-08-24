@@ -111,3 +111,11 @@ sessions/
 # Build artifacts
 *.tar.gz
 *.zip
+
+# Development helper scripts (optional)
+# start-retro.sh
+
+# Screenshots (optional - uncomment to ignore)
+# screenshots/*.png
+# screenshots/*.jpg
+# screenshots/*.jpeg

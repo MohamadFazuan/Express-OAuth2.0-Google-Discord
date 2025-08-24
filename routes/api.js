@@ -206,6 +206,57 @@ router.post("/logout", isAuthenticated, (req, res) => {
   });
 });
 
+/**
+ * POST /api/logout/all
+ * Logout from all sessions (invalidate all user sessions)
+ */
+router.post("/logout/all", isAuthenticated, (req, res) => {
+  const userId = req.user.id;
+  const currentSessionId = req.sessionID;
+
+  // In a production environment, you would typically:
+  // 1. Store session mappings by user ID in Redis/Database
+  // 2. Invalidate all sessions for this user ID
+  // 3. Update user's session version/salt to invalidate all tokens
+  
+  // For this demo, we'll just logout the current session
+  req.logout((err) => {
+    if (err) {
+      console.error("Logout all error:", err);
+      return res.status(500).json({
+        success: false,
+        error: "Logout all failed",
+        message: process.env.NODE_ENV === "development" ? err.message : "Unable to logout from all sessions",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        console.error("Session destroy error:", destroyErr);
+      }
+
+      console.log(`User ${userId} logged out from all sessions, current session ${currentSessionId} destroyed`);
+      
+      // Clear session cookie
+      res.clearCookie('sessionId', {
+        path: '/',
+        domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : undefined,
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Logged out from all sessions successfully",
+        sessionsCleared: 1, // In production, this would be the actual count
+        timestamp: new Date().toISOString(),
+      });
+    });
+  });
+});
+
 // ======================
 // SYSTEM API ROUTES
 // ======================

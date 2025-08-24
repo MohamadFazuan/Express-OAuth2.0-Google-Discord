@@ -37,7 +37,7 @@ router.get(
     // Store login time in session
     req.session.loginTime = new Date().toISOString();
     res.redirect(
-      `${process.env.FRONTEND_URL || "http://localhost:3000"}?success=true`
+      `${process.env.FRONTEND_URL || "http://localhost:3000"}/success`
     );
   }
 );
@@ -56,10 +56,119 @@ router.get(
     // Store login time in session
     req.session.loginTime = new Date().toISOString();
     res.redirect(
-      `${process.env.FRONTEND_URL || "http://localhost:3000"}?success=true`
+      `${process.env.FRONTEND_URL || "http://localhost:3000"}/success`
     );
   }
 );
+
+// ======================
+// LOGOUT ROUTES
+// ======================
+
+// GET logout route - for direct browser navigation
+router.get("/auth/logout", (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect(
+      `${process.env.FRONTEND_URL || "http://localhost:3000"}?message=already_logged_out`
+    );
+  }
+
+  const userId = req.user ? req.user.id : "unknown";
+  const sessionId = req.sessionID;
+
+  req.logout((err) => {
+    if (err) {
+      console.error("GET Logout error:", err);
+      return res.redirect(
+        `${process.env.FRONTEND_URL || "http://localhost:3000"}?error=logout_failed`
+      );
+    }
+
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        console.error("Session destroy error:", destroyErr);
+      }
+
+      console.log(
+        `User ${userId} logged out via GET, session ${sessionId} destroyed`
+      );
+
+      // Clear session cookie
+      res.clearCookie("sessionId", {
+        path: "/",
+        domain:
+          process.env.NODE_ENV === "production"
+            ? process.env.DOMAIN
+            : undefined,
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      });
+
+      res.redirect(
+        `${process.env.FRONTEND_URL || "http://localhost:3000"}?message=logged_out`
+      );
+    });
+  });
+});
+
+// POST logout route - for API calls
+router.post("/auth/logout", (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(200).json({
+      success: true,
+      message: "Already logged out",
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  const userId = req.user.id;
+  const sessionId = req.sessionID;
+
+  req.logout((err) => {
+    if (err) {
+      console.error("POST Logout error:", err);
+      return res.status(500).json({
+        success: false,
+        error: "Logout failed",
+        message:
+          process.env.NODE_ENV === "development"
+            ? err.message
+            : "Unable to logout",
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        console.error("Session destroy error:", destroyErr);
+        // Don't return error here, logout was successful
+      }
+
+      console.log(
+        `User ${userId} logged out via POST, session ${sessionId} destroyed`
+      );
+
+      // Clear session cookie
+      res.clearCookie("sessionId", {
+        path: "/",
+        domain:
+          process.env.NODE_ENV === "production"
+            ? process.env.DOMAIN
+            : undefined,
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Logged out successfully",
+        timestamp: new Date().toISOString(),
+      });
+    });
+  });
+});
 
 // ======================
 // API ROUTES
